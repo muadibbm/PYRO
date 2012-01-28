@@ -17,7 +17,7 @@ root.CellType = class CellType
 	#tileName defines what type the cell is
 	#maxHp specifies the starting hp of the cell
     constructor: (@flammable,@tileName,@maxHp)->
-      root.loadImage @tileName, (err, image) ->
+      root.loadImage @tileName, (err, image) =>
         @image = image
         @ready()
     
