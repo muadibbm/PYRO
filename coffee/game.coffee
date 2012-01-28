@@ -2,25 +2,22 @@ $ = jQuery
 root = window
 
 # test animation
-animWidth = 131
-animHeight = 198
+animWidth = 198
+animHeight = 131
 animState = 0
 animNumStates = 5
 animImage = null
 
 loadImage = (img_file, callback) ->
   image = new Image()
-  image.onload ->
+  image.onload = ->
     err = null
     callback(err, image)
   image.src = img_file
 
-c = $('#myCanvas')[0]
-
-ctx = c.getContext('2d')
 
 root.Game = Game = {}
-Game.fps = 50
+Game.fps = 5
 
 Game.run = () ->
   Game.update()
@@ -33,13 +30,14 @@ Game.update = () ->
 
 Game.draw = () -> 
   srcX = animState * animWidth
-  sryY = 0
+  srcY = 0
   srcWidth = animWidth
   srcHeight = animHeight
-  ctx.drawImage animImage, srcX, srcY, srcHeight, srcWidth,
+  Game.ctx.drawImage animImage, srcX, srcY, srcHeight, srcWidth,
     0, 0, srcHeight, srcWidth
 
-Game.init = (callback) ->
+Game.init = (canvas, callback) ->
+  Game.ctx = canvas.getContext '2d'
   loadImage 'images/treeCollection.png', (err, image) ->
     animImage = image
     callback()
