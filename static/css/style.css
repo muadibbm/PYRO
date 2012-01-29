@@ -1,0 +1,37 @@
+/* Claudia Goldberg's amazing stylesheet v1.0 */
+
+* {margin: 0;}
+
+html, body {height: 100% !important; min-height: 100% !important; max-height: 100% !important; font-size: 100%;}
+
+h1, h2, h3, h4, p {padding: 0 20px;}
+
+h1 {font-size: 1.5em;}
+
+h1 span {font-size: 0.8em;}
+
+.section {padding: 10px 0;}
+/*.section:first-child {padding-top: 0;}*/
+.section:last-child {padding-bottom: 0;}
+
+#container {
+	width: 80%; 
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -25px; /* the bottom margin is the negative value of the footer's height */
+}
+
+#main {background: lightGray;}
+
+header {background: gray;}
+
+footer, .push {
+	height: 25px; /* .push must be the same height as .footer */
+}
+
+footer{background:gray;}
+
+footer p {}
+
+/* Sticky Footer by Ryan Fait | http://ryanfait.com/ */

@@ -2,10 +2,9 @@ root = window
 
 root.Map = class Map
 	#map should be a 1-dimensional array containing Cell objects
-    constructor: (@width,@height,@map) ->
-	
-	getCell: (x, y) ->
-		@map[ y * @width + x % @height ]
+  constructor: (@width,@height,@map) ->	
+  getCell: (x, y) ->
+    @map[ y * @width + x % @height ]
 
 root.Cell = class Cell
     #hp is the hit point of the cell
@@ -20,7 +19,7 @@ root.CellType = class CellType
 	#tileName defines what type the cell is
 	#maxHp specifies the starting hp of the cell
     constructor: (@flammable,@tileName,@maxHp)->
-      root.loadImage @tileName, (err, image) ->
+      root.loadImage @tileName, (err, image) =>
         @image = image
         @ready()
     
