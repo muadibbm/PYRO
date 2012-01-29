@@ -34,12 +34,14 @@
   };
 
   Game.update = function() {
-    var cell, i, n, nCell, neighbours, _ref, _results;
+    var cell, i, map, n, nCell, neighbours, _ref, _results;
     if (Game.cellsOnFire.length > 0) {
+      map = Game.map;
       _results = [];
       for (i = 0, _ref = Game.cellsOnFire.length - 1; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
         cell = Game.cellsOnFire[i];
         cell.hp -= Game.destructionConstant * cell.firelevel;
+        if (cell.hp < 0) cell.hp = 0;
         cell.firelevel -= 1;
         neighbours = [
           {
@@ -63,10 +65,11 @@
             n = neighbours[_i];
             if (map.cellExists(n.x, n.y)) {
               nCell = map.getCell(n.x, n.y);
-              if (n.flammable) {
-                n.firelevel += Game.propogationConstant * c.firelevel;
-                if (n.firelevel > Game.MaxFireLevel) {
-                  _results2.push(n.firelevel = Game.MaxFireLevel);
+              if (nCell.celltype.flammable && nCell.hp > 0) {
+                if (nCell.firelevel === 0) Game.cellsOnFire.push(nCell);
+                nCell.firelevel += Game.propogationConstant * cell.firelevel;
+                if (nCell.firelevel > Game.MaxFireLevel) {
+                  _results2.push(nCell.firelevel = Game.MaxFireLevel);
                 } else {
                   _results2.push(void 0);
                 }

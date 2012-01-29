@@ -11,11 +11,11 @@ Game.initEvents = () ->
       y = ev.clientY - Game.canvas.offsetTop
       cellx = 0
       celly = 0
-      cellx = Math.floor(cellx = (x/Game.canvas.width))
-      celly = Math.floor(celly = (y/Game.canvas.height))
+      cellx = Math.floor((x/Game.canvas.width) * Game.map.width)
+      celly = Math.floor((y/Game.canvas.height) * Game.map.height)
       firedCell = Game.map.getCell(cellx,celly)
-      if (firedCell.flammable)
-        firedCell.fireLevel = Game.MaxFireLevel
+      if (firedCell.celltype.flammable)
+        firedCell.firelevel = Game.MaxFireLevel
         if Game.cellsOnFire.indexOf(firedCell) == -1
           Game.cellsOnFire.push firedCell
 

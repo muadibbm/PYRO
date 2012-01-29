@@ -24,9 +24,12 @@ Game.run = () ->
 
 Game.update = () ->
   if Game.cellsOnFire.length > 0
+    map = Game.map
     for i in [0..Game.cellsOnFire.length-1]
       cell = Game.cellsOnFire[i]
       cell.hp -= Game.destructionConstant * cell.firelevel
+      if cell.hp < 0 
+        cell.hp = 0
       cell.firelevel -= 1
 
       #propogate
@@ -36,13 +39,14 @@ Game.update = () ->
         {x: cell.x,   y: cell.y-1},
         {x: cell.x,   y: cell.y+1}
       ]
+      
       for n in neighbours
         if map.cellExists n.x, n.y
           nCell = map.getCell n.x, n.y
-          if nCell.flammable
+          if nCell.celltype.flammable and nCell.hp > 0
             if nCell.firelevel == 0
               Game.cellsOnFire.push nCell
-            nCell.firelevel += Game.propogationConstant * c.firelevel
+            nCell.firelevel += Game.propogationConstant * cell.firelevel
             if nCell.firelevel > Game.MaxFireLevel
               nCell.firelevel = Game.MaxFireLevel
 
