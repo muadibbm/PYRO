@@ -3,7 +3,7 @@ Game = root.Game
 
 $ = jQuery
 
-
+Game.MaxFireLevel = 10
 
 Game.initEvents = () ->
 	$(Game.canvas).click (ev) ->
@@ -14,4 +14,5 @@ Game.initEvents = () ->
     	cellx = Math.floor(cellx = (x/Game.canvas.width))
     	celly = Math.floor(celly = (y/Game.canvas.height))
     	Firedcell = Game.map.getCell(cellx,celly)
-    	Firedcell.fireLevel = 
+    	if (FiredCell.flammable)
+    		Firedcell.fireLevel = Game.MaxFireLevel
