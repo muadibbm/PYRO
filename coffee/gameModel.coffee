@@ -3,6 +3,9 @@ root = window
 root.Map = class Map
 	#map should be a 1-dimensional array containing Cell objects
     constructor: (@width,@height,@map) ->
+	
+	getCell: (x, y) ->
+		@map[ y * @width + x % @height ]
 
 root.Cell = class Cell
     #hp is the hit point of the cell
