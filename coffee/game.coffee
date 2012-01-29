@@ -39,10 +39,12 @@ Game.update = () ->
       for n in neighbours
         if map.cellExists n.x, n.y
           nCell = map.getCell n.x, n.y
-          if n.flammable
-            n.firelevel += Game.propogationConstant * c.firelevel
-            if n.firelevel > Game.MaxFireLevel
-              n.firelevel = Game.MaxFireLevel
+          if nCell.flammable
+            if nCell.firelevel == 0
+              Game.cellsOnFire.push nCell
+            nCell.firelevel += Game.propogationConstant * c.firelevel
+            if nCell.firelevel > Game.MaxFireLevel
+              nCell.firelevel = Game.MaxFireLevel
 
 Game.cellsOnFire = []
 
@@ -66,7 +68,7 @@ Game.draw = () ->
         srcY = 0
         Game.ctx.drawImage cell.celltype.image, srcX, srcY, Game.tileHeight, Game.tileWidth,
           destX, destY, Game.tileHeight, Game.tileWidth
-
+        #TODO check for fire, render fire
 
 Game.init = (canvas, map, callback) ->
   Game.canvas = canvas 
