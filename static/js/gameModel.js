@@ -12,7 +12,7 @@
     }
 
     Map.prototype.getCell = function(x, y) {
-      return this.map[y * this.width + x % (this.height - 1)];
+      return this.map[y * this.width + x % this.width];
     };
 
     Map.prototype.cellExists = function(x, y) {

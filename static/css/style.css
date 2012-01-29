@@ -36,10 +36,11 @@ header h1 span {font-size: 0.65em; /*color: #333;*/ font-weight: normal; text-sh
 
 #main {background: lightGray;}
 
-#canvasDiv {width: 620px; margin: 0 auto; padding:20px;}
+#canvasDiv {width: 820px; margin: 0 auto; padding:20px;}
 
 canvas {
-	width: 600px;
+	width: 800px;
+	height: 400px;
 	text-align: center; 
 	border: 1px solid gray; 
 	border-radius: 5px;

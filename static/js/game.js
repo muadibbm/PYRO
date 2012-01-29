@@ -34,33 +34,37 @@
   };
 
   Game.update = function() {
-    var cell, i, map, n, nCell, neighbours, _ref, _results;
+    var cell, i, map, n, nCell, neighbours, stoppedFireIndexes, _i, _j, _len, _len2, _ref, _results;
     if (Game.cellsOnFire.length > 0) {
       map = Game.map;
-      _results = [];
+      stoppedFireIndexes = [];
       for (i = 0, _ref = Game.cellsOnFire.length - 1; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
         cell = Game.cellsOnFire[i];
         cell.hp -= Game.destructionConstant * cell.firelevel;
-        if (cell.hp < 0) cell.hp = 0;
-        cell.firelevel -= 1;
-        neighbours = [
-          {
-            x: cell.x - 1,
-            y: cell.y
-          }, {
-            x: cell.x + 1,
-            y: cell.y
-          }, {
-            x: cell.x,
-            y: cell.y - 1
-          }, {
-            x: cell.x,
-            y: cell.y + 1
-          }
-        ];
-        _results.push((function() {
-          var _i, _len, _results2;
-          _results2 = [];
+        if (cell.hp < 0) {
+          cell.hp = 0;
+          cell.firelevel = 0;
+        } else {
+          cell.firelevel -= 1;
+        }
+        if (cell.firelevel <= 0) {
+          stoppedFireIndexes.push(i);
+        } else {
+          neighbours = [
+            {
+              x: cell.x - 1,
+              y: cell.y
+            }, {
+              x: cell.x + 1,
+              y: cell.y
+            }, {
+              x: cell.x,
+              y: cell.y - 1
+            }, {
+              x: cell.x,
+              y: cell.y + 1
+            }
+          ];
           for (_i = 0, _len = neighbours.length; _i < _len; _i++) {
             n = neighbours[_i];
             if (map.cellExists(n.x, n.y)) {
@@ -69,19 +73,17 @@
                 if (nCell.firelevel === 0) Game.cellsOnFire.push(nCell);
                 nCell.firelevel += Game.propogationConstant * cell.firelevel;
                 if (nCell.firelevel > Game.MaxFireLevel) {
-                  _results2.push(nCell.firelevel = Game.MaxFireLevel);
-                } else {
-                  _results2.push(void 0);
+                  nCell.firelevel = Game.MaxFireLevel;
                 }
-              } else {
-                _results2.push(void 0);
               }
-            } else {
-              _results2.push(void 0);
             }
           }
-          return _results2;
-        })());
+        }
+      }
+      _results = [];
+      for (_j = 0, _len2 = stoppedFireIndexes.length; _j < _len2; _j++) {
+        i = stoppedFireIndexes[_j];
+        _results.push(Game.cellsOnFire.splice(i, 1));
       }
       return _results;
     }
@@ -106,7 +108,7 @@
             srcY = 0;
             _results2.push(Game.ctx.drawImage(cell.celltype.image, srcX, srcY, Game.tileHeight, Game.tileWidth, destX, destY, Game.tileHeight, Game.tileWidth));
           } else {
-            damageLevel = Math.floor(4 - 4 * (cell.hp / cell.celltype.maxHp));
+            damageLevel = Math.floor(3 - 3 * (cell.hp / cell.celltype.maxHp));
             srcX = damageLevel * Game.tileWidth;
             srcY = 0;
             _results2.push(Game.ctx.drawImage(cell.celltype.image, srcX, srcY, Game.tileHeight, Game.tileWidth, destX, destY, Game.tileHeight, Game.tileWidth));

@@ -25,30 +25,39 @@ Game.run = () ->
 Game.update = () ->
   if Game.cellsOnFire.length > 0
     map = Game.map
+    stoppedFireIndexes = []
     for i in [0..Game.cellsOnFire.length-1]
       cell = Game.cellsOnFire[i]
       cell.hp -= Game.destructionConstant * cell.firelevel
       if cell.hp < 0 
         cell.hp = 0
-      cell.firelevel -= 1
+        cell.firelevel = 0
+      else
+        cell.firelevel -= 1
 
-      #propogate
-      neighbours = [
-        {x: cell.x-1, y: cell.y},
-        {x: cell.x+1, y: cell.y},
-        {x: cell.x,   y: cell.y-1},
-        {x: cell.x,   y: cell.y+1}
-      ]
-      
-      for n in neighbours
-        if map.cellExists n.x, n.y
-          nCell = map.getCell n.x, n.y
-          if nCell.celltype.flammable and nCell.hp > 0
-            if nCell.firelevel == 0
-              Game.cellsOnFire.push nCell
-            nCell.firelevel += Game.propogationConstant * cell.firelevel
-            if nCell.firelevel > Game.MaxFireLevel
-              nCell.firelevel = Game.MaxFireLevel
+      if cell.firelevel <= 0
+        stoppedFireIndexes.push i
+      else
+        #propogate
+        neighbours = [
+          {x: cell.x-1, y: cell.y},
+          {x: cell.x+1, y: cell.y},
+          {x: cell.x,   y: cell.y-1},
+          {x: cell.x,   y: cell.y+1}
+        ]
+        
+        for n in neighbours
+          if map.cellExists n.x, n.y
+            nCell = map.getCell n.x, n.y
+            if nCell.celltype.flammable and nCell.hp > 0
+              if nCell.firelevel == 0
+                Game.cellsOnFire.push nCell
+              nCell.firelevel += Game.propogationConstant * cell.firelevel
+              if nCell.firelevel > Game.MaxFireLevel
+                nCell.firelevel = Game.MaxFireLevel
+    
+    for i in stoppedFireIndexes
+      Game.cellsOnFire.splice i,1
 
 Game.cellsOnFire = []
 
@@ -67,7 +76,7 @@ Game.draw = () ->
           destX, destY, Game.tileHeight, Game.tileWidth
       else
         # 4 levels of tree damage
-        damageLevel = Math.floor(4 - 4* (cell.hp / cell.celltype.maxHp))
+        damageLevel = Math.floor(3 - 3* (cell.hp / cell.celltype.maxHp))
         srcX = damageLevel * Game.tileWidth
         srcY = 0
         Game.ctx.drawImage cell.celltype.image, srcX, srcY, Game.tileHeight, Game.tileWidth,
