@@ -87,9 +87,8 @@
   Game.cellsOnFire = [];
 
   Game.draw = function() {
-    var destX, destY, srcX, srcY, x, y, _ref, _results;
-    srcX = 0;
-    srcY = 0;
+    var cell, damageLevel, destX, destY, srcX, srcY, x, y, _ref, _results;
+    Game.ctx.clearRect(0, 0, Game.canvas.width, Game.canvas.height);
     _results = [];
     for (x = 0, _ref = Game.map.width - 1; 0 <= _ref ? x <= _ref : x >= _ref; 0 <= _ref ? x++ : x--) {
       _results.push((function() {
@@ -98,7 +97,17 @@
         for (y = 0, _ref2 = Game.map.height - 1; 0 <= _ref2 ? y <= _ref2 : y >= _ref2; 0 <= _ref2 ? y++ : y--) {
           destX = x * Game.tileWidth;
           destY = y * Game.tileHeight;
-          _results2.push(Game.ctx.drawImage(Game.map.getCell(x, y).celltype.image, srcX, srcY, Game.tileHeight, Game.tileWidth, destX, destY, Game.tileHeight, Game.tileWidth));
+          cell = Game.map.getCell(x, y);
+          if (cell.hp === -1) {
+            srcX = 0;
+            srcY = 0;
+            _results2.push(Game.ctx.drawImage(cell.celltype.image, srcX, srcY, Game.tileHeight, Game.tileWidth, destX, destY, Game.tileHeight, Game.tileWidth));
+          } else {
+            damageLevel = Math.floor(4 - 4 * (cell.hp / cell.celltype.maxHp));
+            srcX = damageLevel * Game.tileWidth;
+            srcY = 0;
+            _results2.push(Game.ctx.drawImage(cell.celltype.image, srcX, srcY, Game.tileHeight, Game.tileWidth, destX, destY, Game.tileHeight, Game.tileWidth));
+          }
         }
         return _results2;
       })());
