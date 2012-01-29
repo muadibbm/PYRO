@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>PYRO: An Environmentally-Unfriendly-Anti-Social Game</title>
+  <title>PYRO: The Environmentally-Unfriendly, Anti-Social Game</title>
   <meta name="description" content="A one player game where you can find joy in burning down trees -- which you can't share with friends.">
   <meta name="keywords" content="game, global game jam, pyro game, tree burning, environmentally-unfriendly-anti-social, HTML5 canvas game, JavaScript game">
   <meta name="author" content="Team Awesome">
@@ -13,6 +13,7 @@
   <link href='http://fonts.googleapis.com/css?family=Sigmar+One' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/thickbox.css" type="text/css" media="screen" />
   <!-- end CSS-->
   <!-- JavaScript -->
   <script src="js/jquery-1.6.2.min.js" type="text/javascript"></script>
@@ -24,30 +25,42 @@
   <script src="js/mapParser.js"></script>
   <script src="js/levels.js"></script>
   <script src="js/pyro.js"></script>
+  <script src="js/thickbox.js"></script>
+  <script type="text/javascript">
+  	$(document).ready(function() {
+		
+    });
+  </script>
   <!-- end JavaScript -->
 </head>
 <body>
   <div id="container">
   	<header>
-		<div class="section"><h1>PYRO: <span>An Environmentally-Unfriendly-Anti-Social Game</span></h1>
+		<div class="section"><h1>PYRO: <span>The Environmentally-Unfriendly, Anti-Social Game</span></h1>
 		</div>
 		<nav></nav>
     </header> <!-- end header -->
-    <aside>
-    	
-    </aside> <!-- end aside -->
     <div id="main" role="main" class="section">
-		<div id="canvasDiv">
+    	<aside class="float-left">
+    		<ul>
+    			<li class="thickbox button"><a href="#TB_inline?height=155&width=300&inlineId=hiddenModalContent" class="thickbox">About</a></li>
+    			<li class="button"><a href="#">Regrow Map</a></li>
+    			<li class="button"><a href="#">Randomize Map</a></li>
+    			<li class="button"><a href="#">Just BURN IT ALL!</a></li>
+    		</ul>
+    	</aside> <!-- end aside -->
+		<div id="canvasDiv" class="float-left">
 			<canvas id="myCanvas" width="800" height="400"></canvas>
         	<div class="push"></div> <!-- used for sticky footer (see CSS) -->
         </div>
+        <div class="clear"></div>
     </div> <!-- end #main -->
     <footer>
 		<div class="section"><p>&copy; <script type="text/javascript">var d = new Date(); document.write(d.getFullYear());</script> <a href="#">Team Awesome</a></p>
 		</div>
     </footer> <!-- end footer -->
-
- <a href="http://github.com/muadibbm/PYRO"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/4c7dc970b89fd04b81c8e221ba88ff99a06c6b61/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f77686974655f6666666666662e706e67" alt="Fork me on GitHub"></a> 
-  </div> <!-- end #container --> 
+	<a href="http://github.com/muadibbm/PYRO"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/4c7dc970b89fd04b81c8e221ba88ff99a06c6b61/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f77686974655f6666666666662e706e67" alt="Fork me on GitHub"></a> 
+  </div> <!-- end #container -->
+  <div id="hiddenModalContent" class="TB_modal" style="display:none"><p>Hello world!</p><div class="modal button"><a href="#" type="submit" id="Login" onClick="tb_remove()">Okay</a></div></div> 
 </body>
 </html>
