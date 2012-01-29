@@ -3,8 +3,6 @@ Game = root.Game
 
 $ = jQuery
 
-Game.MaxFireLevel = 10
-
 Game.initEvents = () ->
   $(Game.canvas).click (ev) ->
       x = ev.clientX - Game.canvas.offsetLeft

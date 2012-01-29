@@ -5,6 +5,6 @@ $(window).ready ->
 
   c = $('#myCanvas')[0]
   # map = root.testMap()
-  map = root.parseMap root.sampleMap
+  map = root.parseMap root.levelTwo
   root.Game.init c, map, ->
     root.Game.start()
