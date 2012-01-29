@@ -26,11 +26,9 @@
   root.Cell = Cell = (function() {
 
     function Cell(celltype) {
-      var cellsOnFire;
       this.celltype = celltype;
       this.hp = celltype.maxHp;
       this.firelevel = 0;
-      cellsOnFire = Game.cellsOnFire;
     }
 
     return Cell;

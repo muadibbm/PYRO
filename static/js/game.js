@@ -40,7 +40,7 @@
   };
 
   Game.update = function() {
-    var cell, i, map, n, nCell, neighbours, stoppedFireIndexes, tempArr, _i, _len, _ref, _ref2;
+    var cell, i, map, n, nCell, neighbours, stoppedFireIndexes, _i, _len, _ref, _ref2, _results;
     if (Game.cellsOnFire.length > 0) {
       map = Game.map;
       stoppedFireIndexes = [];
@@ -88,52 +88,59 @@
           }
         }
       }
-      tempArr = [];
-      for (i = 0, _ref2 = Game.cellsOnFire.length - 1; 0 <= _ref2 ? i <= _ref2 : i >= _ref2; 0 <= _ref2 ? i++ : i--) {
+      _results = [];
+      for (i = _ref2 = Game.cellsOnFire.length - 1; _ref2 <= 0 ? i <= 0 : i >= 0; _ref2 <= 0 ? i++ : i--) {
         cell = Game.cellsOnFire[i];
-        if (cell.firelevel > 0) {
-          tempArr.push(cell);
-        } else {
+        if (cell.firelevel <= 0) {
           cell.onFire = false;
+          _results.push(Game.cellsOnFire.splice(i, 1));
+        } else {
+          _results.push(void 0);
         }
       }
-      return Game.cellsOnFire = tempArr;
+      return _results;
     }
   };
 
   Game.cellsOnFire = [];
 
-  Game.lastDraw = 0;
-
   Game.draw = function() {
-    var cell, damageLevel, destX, destY, fireFrame, fireInterval, firesprite, srcX, srcY, x, y, _ref, _ref2;
+    var cell, damageLevel, destX, destY, fireFrame, fireInterval, firesprite, srcX, srcY, x, y, _ref, _results;
     fireInterval = Math.floor(1000 / Game.fireAnimationRate);
     fireFrame = (Math.floor((new Date).getTime() / fireInterval)) % 3;
     Game.ctx.clearRect(0, 0, Game.canvas.width, Game.canvas.height);
+    _results = [];
     for (x = 0, _ref = Game.map.width - 1; 0 <= _ref ? x <= _ref : x >= _ref; 0 <= _ref ? x++ : x--) {
-      for (y = 0, _ref2 = Game.map.height - 1; 0 <= _ref2 ? y <= _ref2 : y >= _ref2; 0 <= _ref2 ? y++ : y--) {
-        destX = x * Game.tileWidth;
-        destY = y * Game.tileHeight;
-        cell = Game.map.getCell(x, y);
-        if (cell.hp === -1) {
-          srcX = 0;
-          srcY = 0;
-          Game.ctx.drawImage(cell.celltype.image, srcX, srcY, Game.tileHeight, Game.tileWidth, destX, destY, Game.tileHeight, Game.tileWidth);
-        } else {
-          damageLevel = Math.floor(3 - 3 * (cell.hp / cell.celltype.maxHp));
-          srcX = damageLevel * Game.tileWidth;
-          srcY = 0;
-          Game.ctx.drawImage(cell.celltype.image, srcX, srcY, Game.tileHeight, Game.tileWidth, destX, destY, Game.tileHeight, Game.tileWidth);
-          if (cell.firelevel > 0) {
-            firesprite = Math.floor((cell.firelevel / Game.MaxFireLevel) * 2.99);
-            srcX = fireFrame * Game.tileWidth;
-            srcY = firesprite * Game.tileHeight;
-            Game.ctx.drawImage(Game.fireSpriteSheet, srcX, srcY, Game.tileHeight, Game.tileWidth, destX, destY, Game.tileHeight, Game.tileWidth);
+      _results.push((function() {
+        var _ref2, _results2;
+        _results2 = [];
+        for (y = 0, _ref2 = Game.map.height - 1; 0 <= _ref2 ? y <= _ref2 : y >= _ref2; 0 <= _ref2 ? y++ : y--) {
+          destX = x * Game.tileWidth;
+          destY = y * Game.tileHeight;
+          cell = Game.map.getCell(x, y);
+          if (cell.hp === -1) {
+            srcX = 0;
+            srcY = 0;
+            _results2.push(Game.ctx.drawImage(cell.celltype.image, srcX, srcY, Game.tileHeight, Game.tileWidth, destX, destY, Game.tileHeight, Game.tileWidth));
+          } else {
+            damageLevel = Math.floor(3 - 3 * (cell.hp / cell.celltype.maxHp));
+            srcX = damageLevel * Game.tileWidth;
+            srcY = 0;
+            Game.ctx.drawImage(cell.celltype.image, srcX, srcY, Game.tileHeight, Game.tileWidth, destX, destY, Game.tileHeight, Game.tileWidth);
+            if (cell.firelevel > 0) {
+              firesprite = Math.floor((cell.firelevel / Game.MaxFireLevel) * 2.99);
+              srcX = fireFrame * Game.tileWidth;
+              srcY = firesprite * Game.tileHeight;
+              _results2.push(Game.ctx.drawImage(Game.fireSpriteSheet, srcX, srcY, Game.tileHeight, Game.tileWidth, destX, destY, Game.tileHeight, Game.tileWidth));
+            } else {
+              _results2.push(void 0);
+            }
           }
         }
-      }
+        return _results2;
+      })());
     }
-    return Game.lastDraw = (new Date).getTime();
+    return _results;
   };
 
   Game.init = function(canvas, map, callback) {
@@ -161,6 +168,10 @@
 
   Game.start = function() {
     return Game._intervalId = setInterval(Game.run, 1000 / Game.fps);
+  };
+
+  Game.stop = function() {
+    return clearTimeout(Game._intervalId);
   };
 
 }).call(this);

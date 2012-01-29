@@ -15,8 +15,6 @@ root.Cell = class Cell
     constructor: (@celltype)->
       @hp = celltype.maxHp
       @firelevel = 0
-      cellsOnFire = Game.cellsOnFire
-       
 
 root.CellType = class CellType
   #flammable specifies if the cell is affected by fire or not

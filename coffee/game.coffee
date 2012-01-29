@@ -58,20 +58,23 @@ Game.update = () ->
               nCell.firelevel += Game.propogationConstant * cell.firelevel
               if nCell.firelevel > Game.MaxFireLevel
                 nCell.firelevel = Game.MaxFireLevel
-    
 
-    tempArr = []
-    for i in [0..Game.cellsOnFire.length-1]
+    #tempArr = []
+    #for i in [0..Game.cellsOnFire.length-1]
+    #  cell = Game.cellsOnFire[i]
+    #  if cell.firelevel > 0
+    #    tempArr.push cell
+    #  else
+    #    cell.onFire = false
+    #Game.cellsOnFire = tempArr
+    for i in [Game.cellsOnFire.length-1..0]
       cell = Game.cellsOnFire[i]
-      if cell.firelevel > 0
-        tempArr.push cell
-      else
-        cell.onFire = false
-    Game.cellsOnFire = tempArr
+      if cell.firelevel <= 0
+        cell.onFire = false 
+        Game.cellsOnFire.splice i,1
 
 Game.cellsOnFire = []
 
-Game.lastDraw = 0
 Game.draw = () ->
   fireInterval = Math.floor(1000 / Game.fireAnimationRate)
   fireFrame = (Math.floor((new Date).getTime() / fireInterval)) % 3 # 3 total fire animation frames
@@ -102,9 +105,6 @@ Game.draw = () ->
           Game.ctx.drawImage Game.fireSpriteSheet, srcX, srcY, Game.tileHeight, Game.tileWidth,
             destX, destY, Game.tileHeight, Game.tileWidth
 
-          
-  Game.lastDraw = (new Date).getTime()
-
 Game.init = (canvas, map, callback) ->
   Game.canvas = canvas 
   Game.map = map
@@ -127,3 +127,6 @@ Game.loadMap = (map) ->
 Game.start = () ->
   # Start the game loop
   Game._intervalId = setInterval Game.run, 1000 / Game.fps
+
+Game.stop = () ->
+  clearTimeout Game._intervalId
