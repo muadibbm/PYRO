@@ -19,9 +19,26 @@
         progWidth = (treesBurnt / treeCount) * $(progBar).width();
         return $($(progBar).children()[0]).width(progWidth);
       });
-      Game.on('victory', function(game) {
-        Game.stop();
-        return alert('Good job, you burnt down the forest!');
+      $('#burn').click(function() {
+        var cell, _i, _len, _ref, _results;
+        Game.cellsOnFire = [];
+        _ref = root.Game.map.map;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          cell = _ref[_i];
+          if (cell.celltype === root.treeType && cell.hp > 0) {
+            cell.firelevel = Game.MaxFireLevel;
+            cell.onFire = true;
+          }
+          _results.push(Game.cellsOnFire.push(cell));
+        }
+        return _results;
+      });
+      $('#randomize').click(function() {
+        return Game.loadMap(root.randomMap(32, 16));
+      });
+      $('#regrow').click(function() {
+        return Game.loadMap(root.randomMap(32, 16));
       });
       return root.Game.start();
     });

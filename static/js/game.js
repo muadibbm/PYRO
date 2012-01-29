@@ -144,15 +144,19 @@
           n = neighbours[_k];
           if (map.cellExists(n.x, n.y)) {
             nCell = map.getCell(n.x, n.y);
-            if (nCell.celltype === root.treeType && !nCell.onFire && nCell.hp < nCell.celltype.maxHp) {
-              needProgUpdate = nCell.hp === 0 ? true : false;
-              nCell.hp += Game.regenerationConstant;
-              if (nCell.hp > nCell.celltype.maxHp) nCell.hp = nCell.celltype.maxHp;
-              cell.hp += Game.regenerationConstant;
-              if (cell.hp > 0) cell.hp = 0;
-              if (needProgUpdate && nCell.hp > 0) {
-                Game.treesBurnt--;
-                Game.emit('progress', Game);
+            if (!nCell.onFire) {
+              if (nCell.celltype === root.treeType && (!nCell.onFire) && nCell.hp < nCell.celltype.maxHp) {
+                needProgUpdate = nCell.hp === 0 ? true : false;
+                nCell.hp += Game.regenerationConstant;
+                if (nCell.hp > nCell.celltype.maxHp) {
+                  nCell.hp = nCell.celltype.maxHp;
+                }
+                cell.hp += Game.regenerationConstant;
+                if (cell.hp > 0) cell.hp = 0;
+                if (needProgUpdate && nCell.hp > 0) {
+                  Game.treesBurnt--;
+                  Game.emit('progress', Game);
+                }
               }
             }
           }
