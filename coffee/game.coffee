@@ -23,12 +23,26 @@ Game.run = () ->
   Game.draw()
 
 Game.update = () ->
-  for i=[0..Game.cellsOnFire.length-1]
-    cell = Game.cellsOnFire[i]
-    cell.hp -= Game.destructionConstant * cell.firelevel
-    cell.firelevel -= 1
-    
-  
+  if Game.cellsOnFire.length > 0
+    for i in [0..Game.cellsOnFire.length-1]
+      cell = Game.cellsOnFire[i]
+      cell.hp -= Game.destructionConstant * cell.firelevel
+      cell.firelevel -= 1
+
+      #propogate
+      neighbours = [
+        {x: cell.x-1, y: cell.y},
+        {x: cell.x+1, y: cell.y},
+        {x: cell.x,   y: cell.y-1},
+        {x: cell.x,   y: cell.y+1}
+      ]
+      for n in neighbours
+        if map.cellExists n.x, n.y
+          nCell = map.getCell n.x, n.y
+          if n.flammable
+            n.firelevel += Game.propogationConstant * c.firelevel
+            if n.firelevel > Game.MaxFireLevel
+              n.firelevel = Game.MaxFireLevel
 
 Game.cellsOnFire = []
 
@@ -53,7 +67,7 @@ Game.init = (canvas, map, callback) ->
   Game.canvas = canvas 
   Game.map = map
   for x in [0..map.width - 1]
-    for y in [0..map.height -1]
+    for y in [0..map.height - 1]
       cell = map.getCell(x,y)
       cell.x = x
       cell.y = y 
