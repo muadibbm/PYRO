@@ -99,9 +99,9 @@ Game.draw = () ->
           destX, destY, Game.tileHeight, Game.tileWidth
         #check for fire, render fire
         if cell.firelevel > 0
-          firesprite = Math.floor( (cell.firelevel/ Game.MaxFireLevel) * 2.99 )
+          fireLevelSprite = Math.floor( (cell.firelevel/ Game.MaxFireLevel) * 2.99 )
           srcX = fireFrame * Game.tileWidth
-          srcY = firesprite * Game.tileHeight
+          srcY = fireLevelSprite * Game.tileHeight
           Game.ctx.drawImage Game.fireSpriteSheet, srcX, srcY, Game.tileHeight, Game.tileWidth,
             destX, destY, Game.tileHeight, Game.tileWidth
 
