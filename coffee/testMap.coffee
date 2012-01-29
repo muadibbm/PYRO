@@ -39,5 +39,5 @@ root.parseMap = (string) ->
       alert "Map had invalid format."
     if firstRow 
       width = width + 1
-	  
+    
   return new Map(width, height, map)
