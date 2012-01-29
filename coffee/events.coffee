@@ -16,4 +16,5 @@ Game.initEvents = () ->
         firedCell.firelevel = Game.MaxFireLevel
         if Game.cellsOnFire.indexOf(firedCell) == -1
           Game.cellsOnFire.push firedCell
+          firedCell.onFire = true
 

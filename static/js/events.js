@@ -7,8 +7,6 @@
 
   $ = jQuery;
 
-  Game.MaxFireLevel = 10;
-
   Game.initEvents = function() {
     return $(Game.canvas).click(function(ev) {
       var cellx, celly, firedCell, x, y;
@@ -22,7 +20,8 @@
       if (firedCell.celltype.flammable) {
         firedCell.firelevel = Game.MaxFireLevel;
         if (Game.cellsOnFire.indexOf(firedCell) === -1) {
-          return Game.cellsOnFire.push(firedCell);
+          Game.cellsOnFire.push(firedCell);
+          return firedCell.onFire = true;
         }
       }
     });

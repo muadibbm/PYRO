@@ -18,17 +18,21 @@
 
   root.Game = Game = {};
 
-  Game.fps = 5;
+  Game.fps = 15;
 
   Game.tileHeight = 25;
 
   Game.tileWidth = 25;
 
-  Game.destructionConstant = 0.1;
+  Game.destructionConstant = 0.05;
 
-  Game.propogationConstant = 0.5;
+  Game.propogationConstant = 0.1;
 
-  Game.fireAnimationRate = 5;
+  Game.fireAnimationRate = 3;
+
+  Game.MaxFireLevel = 10;
+
+  Game.fireFadeRate = 0.683;
 
   Game.run = function() {
     Game.update();
@@ -36,7 +40,7 @@
   };
 
   Game.update = function() {
-    var cell, i, map, n, nCell, neighbours, stoppedFireIndexes, _i, _j, _len, _len2, _ref, _ref2, _results;
+    var cell, i, map, n, nCell, neighbours, stoppedFireIndexes, tempArr, _i, _len, _ref, _ref2;
     if (Game.cellsOnFire.length > 0) {
       map = Game.map;
       stoppedFireIndexes = [];
@@ -47,7 +51,8 @@
           cell.hp = 0;
           cell.firelevel = 0;
         } else {
-          cell.firelevel -= 1;
+          cell.firelevel -= Game.fireFadeRate;
+          if (cell.firelevel < 0) cell.firelevel = 0;
         }
         neighbours = [
           {
@@ -64,29 +69,35 @@
             y: cell.y + 1
           }
         ];
-        for (_i = 0, _len = neighbours.length; _i < _len; _i++) {
-          n = neighbours[_i];
-          if (map.cellExists(n.x, n.y)) {
-            nCell = map.getCell(n.x, n.y);
-            if (nCell.celltype.flammable && nCell.hp > 0) {
-              if (nCell.firelevel === 0) Game.cellsOnFire.push(nCell);
-              nCell.firelevel += Game.propogationConstant * cell.firelevel;
-              if (nCell.firelevel > Game.MaxFireLevel) {
-                nCell.firelevel = Game.MaxFireLevel;
+        if (cell.firelevel > 0) {
+          for (_i = 0, _len = neighbours.length; _i < _len; _i++) {
+            n = neighbours[_i];
+            if (map.cellExists(n.x, n.y)) {
+              nCell = map.getCell(n.x, n.y);
+              if (nCell.celltype.flammable && nCell.hp > 0) {
+                if (!nCell.onFire) {
+                  Game.cellsOnFire.push(nCell);
+                  nCell.onFire = true;
+                }
+                nCell.firelevel += Game.propogationConstant * cell.firelevel;
+                if (nCell.firelevel > Game.MaxFireLevel) {
+                  nCell.firelevel = Game.MaxFireLevel;
+                }
               }
             }
           }
         }
       }
+      tempArr = [];
       for (i = 0, _ref2 = Game.cellsOnFire.length - 1; 0 <= _ref2 ? i <= _ref2 : i >= _ref2; 0 <= _ref2 ? i++ : i--) {
-        if (Game.cellsOnFire[i].firelevel <= 0) stoppedFireIndexes.push(i);
+        cell = Game.cellsOnFire[i];
+        if (cell.firelevel > 0) {
+          tempArr.push(cell);
+        } else {
+          cell.onFire = false;
+        }
       }
-      _results = [];
-      for (_j = 0, _len2 = stoppedFireIndexes.length; _j < _len2; _j++) {
-        i = stoppedFireIndexes[_j];
-        _results.push(Game.cellsOnFire.splice(i, 1));
-      }
-      return _results;
+      return Game.cellsOnFire = tempArr;
     }
   };
 
@@ -97,7 +108,7 @@
   Game.draw = function() {
     var cell, damageLevel, destX, destY, fireFrame, fireInterval, firesprite, srcX, srcY, x, y, _ref, _ref2;
     fireInterval = Math.floor(1000 / Game.fireAnimationRate);
-    fireFrame = ((new Date).getTime() % fireInterval) % 3;
+    fireFrame = (Math.floor((new Date).getTime() / fireInterval)) % 3;
     Game.ctx.clearRect(0, 0, Game.canvas.width, Game.canvas.height);
     for (x = 0, _ref = Game.map.width - 1; 0 <= _ref ? x <= _ref : x >= _ref; 0 <= _ref ? x++ : x--) {
       for (y = 0, _ref2 = Game.map.height - 1; 0 <= _ref2 ? y <= _ref2 : y >= _ref2; 0 <= _ref2 ? y++ : y--) {
