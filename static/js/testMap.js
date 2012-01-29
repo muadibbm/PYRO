@@ -5,23 +5,34 @@
 
   Cell = root.Cell, CellType = root.CellType, Map = root.Map;
 
-  root.testMap = testMap = function() {
-    var cellHeight, cellWidth, grass, height, i, map, mapHeight, mapWidth, numofCells, tree, water, width;
+  root.testMap = testMap = function() {};
+
+  root.parseMap = function(string) {
+    var char, firstRow, grass, height, map, s, tree, water, width, _ref;
     tree = new CellType(true, "images/tree.png", 10);
     grass = new CellType(false, "images/grass.png", -1);
     water = new CellType(false, "images/water.png", -1);
+    width = 0;
+    firstRow = true;
+    height = 0;
     map = [];
-    width = 800;
-    height = 600;
-    cellWidth = 25;
-    cellHeight = 25;
-    numofCells = (width * height) / (cellWidth * cellHeight);
-    for (i = 1; 1 <= numofCells ? i <= numofCells : i >= numofCells; 1 <= numofCells ? i++ : i--) {
-      map.push(new Cell(tree));
+    for (s = 0, _ref = string.length - 1; 0 <= _ref ? s <= _ref : s >= _ref; 0 <= _ref ? s++ : s--) {
+      char = string[s];
+      if (char === '0') {
+        map.push(new Cell(grass));
+      } else if (char === '1') {
+        map.push(new Cell(tree));
+      } else if (char === '2') {
+        map.push(new Cell(water));
+      } else if (char === '$') {
+        firstRow = false;
+        height = height + 1;
+      } else {
+        alert("Map had invalid format.");
+      }
+      if (firstRow) width = width + 1;
     }
-    mapWidth = width / cellWidth;
-    mapHeight = height / cellHeight;
-    return new Map(mapWidth, mapHeight, map);
+    return new Map(width, height, map);
   };
 
 }).call(this);
