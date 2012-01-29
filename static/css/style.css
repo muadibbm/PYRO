@@ -2,36 +2,61 @@
 
 * {margin: 0;}
 
-html, body {height: 100% !important; min-height: 100% !important; max-height: 100% !important; font-size: 100%;}
+html, body {
+	height: 100% !important; 
+	font-size: 100%;
+	font-family: sans-serif;
+}
+
+body {background: #555;}
 
 h1, h2, h3, h4, p {padding: 0 20px;}
-
-h1 {font-size: 1.5em;}
-
-h1 span {font-size: 0.8em;}
 
 .section {padding: 10px 0;}
 /*.section:first-child {padding-top: 0;}*/
 .section:last-child {padding-bottom: 0;}
 
 #container {
+	min-width: 640px;
 	width: 80%; 
 	min-height: 100%;
 	height: auto !important;
 	height: 100%;
 	margin: 0 auto -25px; /* the bottom margin is the negative value of the footer's height */
+	box-shadow: #333 0px 0px 10px;
+	-moz-box-shadow: #333 0px 0px 10px;
+	-webkit-box-shadow: #333 0px 0px 10px;
 }
+
+header {background: #777; height: 70px; position: relative;}
+
+header h1 {font-size: 2em; color: #222; text-shadow: 0 0 4px white, 0 -5px 4px #FF3, 2px -10px 6px #FD3, -2px -15px 11px #F80, 2px -25px 18px #F20; position: absolute; bottom: 10px;}
+
+header h1 span {font-size: 0.65em; /*color: #333;*/ font-weight: normal; text-shadow: 0px 1px 2px #999; -moz-text-shadow: 0px 1px 2px #999; -webkit-text-shadow: 0px 1px 2px #999;}
 
 #main {background: lightGray;}
 
-header {background: gray;}
+#canvasDiv {width: 620px; margin: 0 auto; padding:20px;}
+
+canvas {
+	width: 600px;
+	text-align: center; 
+	border: 1px solid gray; 
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	box-shadow: gray 2px 2px 5px;
+	-moz-box-shadow: gray 2px 2px 5px;
+	-webkit-box-shadow: gray 2px 2px 5px;
+	background: white;
+}
 
 footer, .push {
 	height: 25px; /* .push must be the same height as .footer */
 }
 
-footer{background:gray;}
+footer{background: #777;}
 
-footer p {}
+footer p {text-shadow: 0px 1px 2px #999; -moz-text-shadow: 0px 1px 2px #999; -webkit-text-shadow: 0px 1px 2px #999;}
 
 /* Sticky Footer by Ryan Fait | http://ryanfait.com/ */
