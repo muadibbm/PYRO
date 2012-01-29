@@ -14,5 +14,5 @@ app.configure "production", ->
   app.use express.errorHandler()
 
 port = 8080
-app.listen port
+app.listen process.env.PORT || port
 
