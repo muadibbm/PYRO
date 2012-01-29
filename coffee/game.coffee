@@ -108,6 +108,7 @@ Game.draw = () ->
 Game.init = (canvas, map, callback) ->
   Game.canvas = canvas 
   Game.map = map
+  Game.started = false
   for x in [0..map.width - 1]
     for y in [0..map.height - 1]
       cell = map.getCell(x,y)
@@ -120,13 +121,24 @@ Game.init = (canvas, map, callback) ->
     callback()
 
 Game.loadMap = (map) ->
-  # load images for cells
   Game.map = map
   
 
 Game.start = () ->
-  # Start the game loop
-  Game._intervalId = setInterval Game.run, 1000 / Game.fps
+  if not Game.started
+    # Start the game loop
+    Game._intervalId = setInterval Game.run, 1000 / Game.fps
+    Game.started = true
 
 Game.stop = () ->
-  clearTimeout Game._intervalId
+  if Game.started
+    clearTimeout Game._intervalId
+    Game.started = false
+
+Game.clear = () ->
+  if Game.started
+    Game.stop()
+  Game.map = []
+  
+  
+

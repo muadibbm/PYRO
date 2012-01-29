@@ -17,7 +17,7 @@ h1, h2, h3, h4, p {padding: 0 20px;}
 .section:last-child {padding-bottom: 0;}
 
 #container {
-	min-width: 640px;
+	min-width: 840px;
 	width: 80%; 
 	min-height: 100%;
 	height: auto !important;
@@ -38,7 +38,7 @@ header h1 span {font-size: 0.65em; /*color: #333;*/ font-weight: normal; text-sh
 
 #canvasDiv {width: 820px; margin: 0 auto; padding:20px;}
 
-canvas {
+#myCanvas {
 	width: 800px;
 	height: 400px;
 	text-align: center; 
@@ -50,6 +50,7 @@ canvas {
 	-moz-box-shadow: gray 2px 2px 5px;
 	-webkit-box-shadow: gray 2px 2px 5px;
 	background: white;
+	position: relative;
 }
 
 footer, .push {

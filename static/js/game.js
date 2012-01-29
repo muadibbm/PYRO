@@ -147,6 +147,7 @@
     var cell, x, y, _ref, _ref2;
     Game.canvas = canvas;
     Game.map = map;
+    Game.started = false;
     for (x = 0, _ref = map.width - 1; 0 <= _ref ? x <= _ref : x >= _ref; 0 <= _ref ? x++ : x--) {
       for (y = 0, _ref2 = map.height - 1; 0 <= _ref2 ? y <= _ref2 : y >= _ref2; 0 <= _ref2 ? y++ : y--) {
         cell = map.getCell(x, y);
@@ -167,11 +168,22 @@
   };
 
   Game.start = function() {
-    return Game._intervalId = setInterval(Game.run, 1000 / Game.fps);
+    if (!Game.started) {
+      Game._intervalId = setInterval(Game.run, 1000 / Game.fps);
+      return Game.started = true;
+    }
   };
 
   Game.stop = function() {
-    return clearTimeout(Game._intervalId);
+    if (Game.started) {
+      clearTimeout(Game._intervalId);
+      return Game.started = false;
+    }
+  };
+
+  Game.clear = function() {
+    if (Game.started) Game.stop();
+    return Game.map = [];
   };
 
 }).call(this);

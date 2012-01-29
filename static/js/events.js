@@ -1,5 +1,5 @@
 (function() {
-  var $, Game, root;
+  var $, Game, getPosition, root;
 
   root = window;
 
@@ -7,11 +7,24 @@
 
   $ = jQuery;
 
+  getPosition = function(e) {
+    var $targ, targ, x, y;
+    if (!(e != null)) e = window.event;
+    targ = e.target != null ? e.target : e.srcElement;
+    if (targ.nodeType === 3) targ = targ.parentNode;
+    $targ = $(targ);
+    x = e.pageX - $targ.offset().left;
+    y = e.pageY - $targ.offset().top;
+    return {
+      x: x,
+      y: y
+    };
+  };
+
   Game.initEvents = function() {
     return $(Game.canvas).click(function(ev) {
-      var cellx, celly, firedCell, x, y;
-      x = ev.clientX - Game.canvas.offsetLeft;
-      y = ev.clientY - Game.canvas.offsetTop;
+      var cellx, celly, firedCell, x, y, _ref;
+      _ref = getPosition(ev), x = _ref.x, y = _ref.y;
       cellx = 0;
       celly = 0;
       cellx = Math.floor(x / Game.tileWidth);
