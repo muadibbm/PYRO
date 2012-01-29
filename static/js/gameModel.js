@@ -15,6 +15,10 @@
       return this.map[y * this.width + x % this.width];
     };
 
+    Map.prototype.setCell = function(x, y, cell) {
+      return this.map[y * this.width + x % this.width] = cell;
+    };
+
     Map.prototype.cellExists = function(x, y) {
       return x >= 0 && x < this.width && y >= 0 && y < this.height;
     };
