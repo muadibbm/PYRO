@@ -6,7 +6,7 @@ $(window).ready ->
   c = $('#myCanvas')[0]
   # map = root.testMap()
   map = root.parseMap root.levelTwo
-  map = root.randomMap 30, 16
+  map = root.randomMap 32, 16
   root.Game.init c, map, ->
 
     # bind progress bar

@@ -9,7 +9,7 @@
     var c, map;
     c = $('#myCanvas')[0];
     map = root.parseMap(root.levelTwo);
-    map = root.randomMap(30, 16);
+    map = root.randomMap(32, 16);
     return root.Game.init(c, map, function() {
       var progBar;
       progBar = $('.progressBar')[0];
