@@ -8,7 +8,7 @@
   $(window).ready(function() {
     var c, map;
     c = $('#myCanvas')[0];
-    map = root.parseMap(root.sampleMap);
+    map = root.parseMap(root.levelFour);
     return root.Game.init(c, map, function() {
       return root.Game.start();
     });

@@ -19,7 +19,7 @@ a {text-decoration: none; color: lightBlue;}
 .section:last-child {padding-bottom: 0;}
 
 #container {
-	min-width: 620px;
+	min-width: 820px;
 	min-height: 100%;
 	height: auto !important;
 	height: 100%;
@@ -44,6 +44,10 @@ aside {}
 
 canvas {
 	margin: 70px 0px 20px 0px;
+}
+
+#myCanvas {
+	height: 400px;
 	text-align: center; 
 	border: 1px solid gray; 
 	border-radius: 5px;
@@ -53,6 +57,7 @@ canvas {
 	-moz-box-shadow: gray 2px 2px 5px;
 	-webkit-box-shadow: gray 2px 2px 5px;
 	background: white;
+	position: relative;
 }
 
 footer, .push {height: 50px; /* .push must be the same height as .footer*/}

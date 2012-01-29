@@ -12,7 +12,7 @@
     }
 
     Map.prototype.getCell = function(x, y) {
-      return this.map[y * this.width + x % (this.height - 1)];
+      return this.map[y * this.width + x % this.width];
     };
 
     Map.prototype.cellExists = function(x, y) {
@@ -26,11 +26,9 @@
   root.Cell = Cell = (function() {
 
     function Cell(celltype) {
-      var cellsOnFire;
       this.celltype = celltype;
       this.hp = celltype.maxHp;
       this.firelevel = 0;
-      cellsOnFire = Game.cellsOnFire;
     }
 
     return Cell;

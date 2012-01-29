@@ -4,7 +4,7 @@ root.Map = class Map
   #map should be a 1-dimensional array containing Cell objects
   constructor: (@width,@height,@map) ->  
   getCell: (x, y) ->
-    @map[ y * @width + x % (@height - 1) ]
+    @map[ y * @width + x % @width]
   cellExists: (x, y) ->
     x >=0 and x < @width and y >= 0 and y < @height
 
@@ -15,8 +15,6 @@ root.Cell = class Cell
     constructor: (@celltype)->
       @hp = celltype.maxHp
       @firelevel = 0
-      cellsOnFire = Game.cellsOnFire
-       
 
 root.CellType = class CellType
   #flammable specifies if the cell is affected by fire or not
