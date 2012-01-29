@@ -41,7 +41,8 @@ Game.draw = () ->
   #  0, 0, srcHeight, srcWidth
 
 Game.init = (canvas, map, callback) ->
-  Game.canvas = canvas
+  Game.canvas = canvas 
+  Game.map = map
   Game.ctx = canvas.getContext '2d'
   Game.initEvents()
   callback()
