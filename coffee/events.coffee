@@ -16,15 +16,27 @@ getPosition = (e) ->
 
 Game.initEvents = () ->
   $(Game.canvas).click (ev) ->
-    {x, y} = getPosition(ev)
-    cellx = 0
-    celly = 0
-    cellx = Math.floor x/Game.tileWidth
-    celly = Math.floor y/Game.tileHeight
-    firedCell = Game.map.getCell(cellx,celly)
-    if (firedCell.celltype.flammable)
-      firedCell.firelevel = Game.MaxFireLevel
-      if Game.cellsOnFire.indexOf(firedCell) == -1
-        Game.cellsOnFire.push firedCell
-        firedCell.onFire = true
+    if Game.started
+      {x, y} = getPosition(ev)
+      cellx = 0
+      celly = 0
+      cellx = Math.floor x/Game.tileWidth
+      celly = Math.floor y/Game.tileHeight
+      firedCell = Game.map.getCell(cellx,celly)
+      if (firedCell.celltype.flammable)
+        firedCell.firelevel = Game.MaxFireLevel
+        if Game.cellsOnFire.indexOf(firedCell) == -1
+          Game.cellsOnFire.push firedCell
+          firedCell.onFire = true
 
+
+# Event Emitter
+Game._listeners = {}
+Game.emit = (eventName, arg) ->
+  if Game._listeners[eventName]?
+    for l in Game._listeners[eventName]
+      l arg
+Game.on = (eventName, listener) ->
+  if not Game._listeners[eventName]?
+    Game._listeners[eventName] = []
+  Game._listeners[eventName].push listener

@@ -5,6 +5,8 @@ root.Map = class Map
   constructor: (@width,@height,@map) ->  
   getCell: (x, y) ->
     @map[ y * @width + x % @width]
+  setCell: (x, y, cell) ->
+    @map[ y * @width + x % @width] = cell
   cellExists: (x, y) ->
     x >=0 and x < @width and y >= 0 and y < @height
 
@@ -15,6 +17,7 @@ root.Cell = class Cell
     constructor: (@celltype)->
       @hp = celltype.maxHp
       @firelevel = 0
+      #@fireLevelSprite = 0
 
 root.CellType = class CellType
   #flammable specifies if the cell is affected by fire or not
