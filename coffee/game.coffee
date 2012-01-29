@@ -29,19 +29,35 @@ Game.fireAnimationRate = 10 # frames per second
 Game.MaxFireLevel = 10
 Game.fireFadeRate = 0.683
 Game.regenerationConstant = 0.1
+Game.makeSmoke = true
+Game.smokeLikelihood = 0.2
+Game.smokeSize = 7 
+Game.smokeLife = 2 # seconds
 # --------------------------
 
 Game.run = () ->
   Game.update()
   Game.draw()
 
-Game._lastFireSpriteUpdate = (new Date).getTime()
+Game._lastUpdate = (new Date).getTime()
 Game.update = () ->
   map = Game.map
+  updateTime = (new Date).getTime()
+  elapsed = updateTime - Game._lastUpdate
   if Game.cellsOnFire.length > 0
     stoppedFireIndexes = []
     for i in [0..Game.cellsOnFire.length-1]
       cell = Game.cellsOnFire[i]
+      
+      if Game.makeSmoke and cell.firelevel == Game.MaxFireLevel
+        if Math.random() < Game.smokeLikelihood
+          # generate smoke
+          Game.smoke.push 
+            x: cell.x * Game.tileWidth + Game.tileWidth / 2 + (Game.tileWidth * Math.random() - Game.tileWidth/2)
+            y: cell.y * Game.tileHeight + Game.tileHeight / 2 + (Game.tileHeight * Math.random() - Game.tileHeight/2)
+
+            life: Game.smokeLife
+
       cell.hp -= Game.destructionConstant * cell.firelevel
       if cell.hp <= 0 
         cell.hp = 0
@@ -54,6 +70,7 @@ Game.update = () ->
         cell.firelevel -= Game.fireFadeRate
         cell.firelevel = 0 if cell.firelevel < 0
 
+      
       #propogate
       neighbours = getNeighbours cell.x, cell.y
       
@@ -75,6 +92,16 @@ Game.update = () ->
         cell.onFire = false 
         Game.cellsOnFire.splice i,1
 
+  if Game.smoke.length > 0
+    for i in [Game.smoke.length-1..0]
+      smoke = Game.smoke[i]
+      smoke.life -= elapsed/1000
+      # move at 10px per second
+      delta = 10 * (elapsed/1000)
+      smoke.x += delta
+      if smoke.life <= 0
+        Game.smoke.splice i,1
+    
   # regeneration
   for cell in Game._waterCells
     if cell.hp < 0 #negative hp means regneration points
@@ -91,6 +118,8 @@ Game.update = () ->
             if needProgUpdate and nCell.hp > 0
               Game.treesBurnt--
               Game.emit 'progress', Game
+
+  Game._lastUpdate = updateTime
 
 Game.cellsOnFire = []
 
@@ -131,6 +160,26 @@ Game.draw = () ->
           Game.ctx.drawImage Game.fireSpriteSheet, srcX, srcY, Game.tileHeight, Game.tileWidth,
             destX, destY, Game.tileHeight, Game.tileWidth
 
+  if Game.makeSmoke
+    for smoke in Game.smoke
+      Game.ctx.globalAlpha = 0.2 * (smoke.life / Game.smokeLife)
+      yOffset = (Game.smokeLife - (smoke.life / Game.smokeLife)) * 25
+      Game.ctx.beginPath()
+      Game.ctx.arc smoke.x, smoke.y - yOffset, Game.smokeSize, 0, 2 * Math.PI, true
+      Game.ctx.closePath()
+      Game.ctx.fill()
+      Game.ctx.beginPath()
+      Game.ctx.arc smoke.x - Game.smokeSize/6, smoke.y - yOffset + Game.smokeSize/6, Game.smokeSize/3, 0, 2 * Math.PI, true
+      Game.ctx.closePath()
+      Game.ctx.fill()
+      Game.ctx.beginPath()
+      Game.ctx.arc smoke.x - Game.smokeSize/4, smoke.y - yOffset + Game.smokeSize/4, Game.smokeSize/2, 0, 2 * Math.PI, true
+      Game.ctx.closePath()
+      Game.ctx.fill()
+
+
+    Game.ctx.globalAlpha = 1
+
 Game._waterCells = []
 
 Game.init = (canvas, map, callback) ->
@@ -148,6 +197,7 @@ Game.loadMap = (map) ->
   Game.map = map
   Game._waterCells = []
   Game.cellsOnFire = []
+  Game.smoke = [] # array of elements {x,y,life}
   for x in [0..map.width - 1]
     for y in [0..map.height - 1]
       cell = map.getCell(x,y)
