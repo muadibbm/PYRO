@@ -31,9 +31,9 @@
         cellx = Math.floor(x / Game.tileWidth);
         celly = Math.floor(y / Game.tileHeight);
         firedCell = Game.map.getCell(cellx, celly);
-        if (firedCell.celltype.flammable) {
+        if (firedCell.celltype.flammable && fireCell.hp > 0) {
           firedCell.firelevel = Game.MaxFireLevel;
-          if (Game.cellsOnFire.indexOf(firedCell) === -1) {
+          if (!firedCell.onFire) {
             Game.cellsOnFire.push(firedCell);
             return firedCell.onFire = true;
           }
