@@ -52,6 +52,8 @@
 
   Game.fireFadeRate = 0.683;
 
+  Game.regenerate = true;
+
   Game.regenerationConstant = 0.1;
 
   Game.makeSmoke = true;
@@ -83,27 +85,29 @@
         if (smoke.life <= 0) Game.smoke.splice(i, 1);
       }
     }
-    _ref2 = Game._waterCells;
-    for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-      cell = _ref2[_i];
-      if (cell.hp < 0) {
-        neighbours = getNeighbours(cell.x, cell.y);
-        for (_j = 0, _len2 = neighbours.length; _j < _len2; _j++) {
-          n = neighbours[_j];
-          if (map.cellExists(n.x, n.y)) {
-            nCell = map.getCell(n.x, n.y);
-            if (!nCell.onFire) {
-              if (nCell.celltype === root.treeType && (!nCell.onFire) && nCell.hp < nCell.celltype.maxHp) {
-                needProgUpdate = nCell.hp === 0 ? true : false;
-                nCell.hp += Game.regenerationConstant;
-                if (nCell.hp > nCell.celltype.maxHp) {
-                  nCell.hp = nCell.celltype.maxHp;
-                }
-                cell.hp += Game.regenerationConstant;
-                if (cell.hp > 0) cell.hp = 0;
-                if (needProgUpdate && nCell.hp > 0) {
-                  Game.treesBurnt--;
-                  Game.emit('progress', Game);
+    if (Game.regenerate) {
+      _ref2 = Game._waterCells;
+      for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+        cell = _ref2[_i];
+        if (cell.hp < 0) {
+          neighbours = getNeighbours(cell.x, cell.y);
+          for (_j = 0, _len2 = neighbours.length; _j < _len2; _j++) {
+            n = neighbours[_j];
+            if (map.cellExists(n.x, n.y)) {
+              nCell = map.getCell(n.x, n.y);
+              if (!nCell.onFire) {
+                if (nCell.celltype === root.treeType && (!nCell.onFire) && nCell.hp < nCell.celltype.maxHp) {
+                  needProgUpdate = nCell.hp === 0 ? true : false;
+                  nCell.hp += Game.regenerationConstant;
+                  if (nCell.hp > nCell.celltype.maxHp) {
+                    nCell.hp = nCell.celltype.maxHp;
+                  }
+                  cell.hp += Game.regenerationConstant;
+                  if (cell.hp > 0) cell.hp = 0;
+                  if (needProgUpdate && nCell.hp > 0) {
+                    Game.treesBurnt--;
+                    Game.emit('progress', Game);
+                  }
                 }
               }
             }
