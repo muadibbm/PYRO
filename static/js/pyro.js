@@ -28,9 +28,11 @@
           cell = _ref[_i];
           if (cell.celltype === root.treeType && cell.hp > 0) {
             cell.firelevel = Game.MaxFireLevel;
-            cell.onFire = true;
+            if (!cell.onFire) Game.cellsOnFire.push(cell);
+            _results.push(cell.onFire = true);
+          } else {
+            _results.push(void 0);
           }
-          _results.push(Game.cellsOnFire.push(cell));
         }
         return _results;
       });

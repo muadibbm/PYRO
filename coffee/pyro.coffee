@@ -26,8 +26,9 @@ $(window).ready ->
       for cell in root.Game.map.map
         if cell.celltype == root.treeType and cell.hp > 0
           cell.firelevel = Game.MaxFireLevel  
+          if not cell.onFire then Game.cellsOnFire.push cell
           cell.onFire = true
-        Game.cellsOnFire.push cell
+        
     $('#randomize').click ->
       Game.loadMap root.randomMap 32, 16
     $('#regrow').click ->
