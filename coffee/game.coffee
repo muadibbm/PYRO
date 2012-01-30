@@ -28,6 +28,7 @@ Game.propogationConstant = 0.12
 Game.fireAnimationRate = 10 # frames per second
 Game.MaxFireLevel = 10
 Game.fireFadeRate = 0.683
+Game.regenerate = true
 Game.regenerationConstant = 0.1
 Game.makeSmoke = true
 Game.smokeLikelihood = 0.2
@@ -57,22 +58,23 @@ Game.update = () ->
         Game.smoke.splice i,1
     
   # regeneration
-  for cell in Game._waterCells
-    if cell.hp < 0 #negative hp means regneration points
-      neighbours = getNeighbours cell.x, cell.y
-      for n in neighbours
-        if map.cellExists n.x, n.y
-          nCell = map.getCell n.x, n.y
-          if not nCell.onFire
-            if nCell.celltype == root.treeType and (not nCell.onFire) and nCell.hp < nCell.celltype.maxHp
-              needProgUpdate = if nCell.hp == 0 then true else false
-              nCell.hp += Game.regenerationConstant
-              if nCell.hp > nCell.celltype.maxHp then nCell.hp = nCell.celltype.maxHp
-              cell.hp += Game.regenerationConstant
-              if cell.hp > 0 then cell.hp = 0
-              if needProgUpdate and nCell.hp > 0
-                Game.treesBurnt--
-                Game.emit 'progress', Game
+  if Game.regenerate
+    for cell in Game._waterCells
+      if cell.hp < 0 #negative hp means regneration points
+        neighbours = getNeighbours cell.x, cell.y
+        for n in neighbours
+          if map.cellExists n.x, n.y
+            nCell = map.getCell n.x, n.y
+            if not nCell.onFire
+              if nCell.celltype == root.treeType and (not nCell.onFire) and nCell.hp < nCell.celltype.maxHp
+                needProgUpdate = if nCell.hp == 0 then true else false
+                nCell.hp += Game.regenerationConstant
+                if nCell.hp > nCell.celltype.maxHp then nCell.hp = nCell.celltype.maxHp
+                cell.hp += Game.regenerationConstant
+                if cell.hp > 0 then cell.hp = 0
+                if needProgUpdate and nCell.hp > 0
+                  Game.treesBurnt--
+                  Game.emit 'progress', Game
 
   # fire
   if Game.cellsOnFire.length > 0
