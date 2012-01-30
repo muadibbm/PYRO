@@ -44,6 +44,37 @@ Game.update = () ->
   map = Game.map
   updateTime = (new Date).getTime()
   elapsed = updateTime - Game._lastUpdate
+
+  # smoke
+  if Game.smoke.length > 0
+    for i in [Game.smoke.length-1..0]
+      smoke = Game.smoke[i]
+      smoke.life -= elapsed/1000
+      # move at 10px per second
+      delta = 10 * (elapsed/1000)
+      smoke.x += delta
+      if smoke.life <= 0
+        Game.smoke.splice i,1
+    
+  # regeneration
+  for cell in Game._waterCells
+    if cell.hp < 0 #negative hp means regneration points
+      neighbours = getNeighbours cell.x, cell.y
+      for n in neighbours
+        if map.cellExists n.x, n.y
+          nCell = map.getCell n.x, n.y
+          if not nCell.onFire
+            if nCell.celltype == root.treeType and (not nCell.onFire) and nCell.hp < nCell.celltype.maxHp
+              needProgUpdate = if nCell.hp == 0 then true else false
+              nCell.hp += Game.regenerationConstant
+              if nCell.hp > nCell.celltype.maxHp then nCell.hp = nCell.celltype.maxHp
+              cell.hp += Game.regenerationConstant
+              if cell.hp > 0 then cell.hp = 0
+              if needProgUpdate and nCell.hp > 0
+                Game.treesBurnt--
+                Game.emit 'progress', Game
+
+  # fire
   if Game.cellsOnFire.length > 0
     stoppedFireIndexes = []
     for i in [0..Game.cellsOnFire.length-1]
@@ -91,34 +122,6 @@ Game.update = () ->
       if cell.firelevel <= 0
         cell.onFire = false 
         Game.cellsOnFire.splice i,1
-
-  if Game.smoke.length > 0
-    for i in [Game.smoke.length-1..0]
-      smoke = Game.smoke[i]
-      smoke.life -= elapsed/1000
-      # move at 10px per second
-      delta = 10 * (elapsed/1000)
-      smoke.x += delta
-      if smoke.life <= 0
-        Game.smoke.splice i,1
-    
-  # regeneration
-  for cell in Game._waterCells
-    if cell.hp < 0 #negative hp means regneration points
-      neighbours = getNeighbours cell.x, cell.y
-      for n in neighbours
-        if map.cellExists n.x, n.y
-          nCell = map.getCell n.x, n.y
-          if not nCell.onFire
-            if nCell.celltype == root.treeType and (not nCell.onFire) and nCell.hp < nCell.celltype.maxHp
-              needProgUpdate = if nCell.hp == 0 then true else false
-              nCell.hp += Game.regenerationConstant
-              if nCell.hp > nCell.celltype.maxHp then nCell.hp = nCell.celltype.maxHp
-              cell.hp += Game.regenerationConstant
-              if cell.hp > 0 then cell.hp = 0
-              if needProgUpdate and nCell.hp > 0
-                Game.treesBurnt--
-                Game.emit 'progress', Game
 
   Game._lastUpdate = updateTime
 
@@ -224,6 +227,18 @@ Game.stop = () ->
   if Game.started
     clearTimeout Game._intervalId
     Game.started = false
+
+Game.regrow = () ->
+  Game.stop()
+  Game.cellsOnFire = []
+  for cell in Game.map.map
+    cell.hp = cell.celltype.maxHp
+    cell.firelevel = 0
+    cell.onFire = false
+  Game.treesBurnt = 0
+  Game.emit 'progress', Game
+  Game.start()
+
 
 #Game.clear = () ->
 #  if Game.started

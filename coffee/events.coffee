@@ -23,7 +23,7 @@ Game.initEvents = () ->
       cellx = Math.floor x/Game.tileWidth
       celly = Math.floor y/Game.tileHeight
       firedCell = Game.map.getCell(cellx,celly)
-      if firedCell.celltype.flammable and fireCell.hp > 0
+      if firedCell.celltype.flammable and firedCell.hp > 0
         firedCell.firelevel = Game.MaxFireLevel
         #if Game.cellsOnFire.indexOf(firedCell) == -1
         if not firedCell.onFire

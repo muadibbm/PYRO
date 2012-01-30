@@ -74,9 +74,46 @@
     map = Game.map;
     updateTime = (new Date).getTime();
     elapsed = updateTime - Game._lastUpdate;
+    if (Game.smoke.length > 0) {
+      for (i = _ref = Game.smoke.length - 1; _ref <= 0 ? i <= 0 : i >= 0; _ref <= 0 ? i++ : i--) {
+        smoke = Game.smoke[i];
+        smoke.life -= elapsed / 1000;
+        delta = 10 * (elapsed / 1000);
+        smoke.x += delta;
+        if (smoke.life <= 0) Game.smoke.splice(i, 1);
+      }
+    }
+    _ref2 = Game._waterCells;
+    for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+      cell = _ref2[_i];
+      if (cell.hp < 0) {
+        neighbours = getNeighbours(cell.x, cell.y);
+        for (_j = 0, _len2 = neighbours.length; _j < _len2; _j++) {
+          n = neighbours[_j];
+          if (map.cellExists(n.x, n.y)) {
+            nCell = map.getCell(n.x, n.y);
+            if (!nCell.onFire) {
+              if (nCell.celltype === root.treeType && (!nCell.onFire) && nCell.hp < nCell.celltype.maxHp) {
+                needProgUpdate = nCell.hp === 0 ? true : false;
+                nCell.hp += Game.regenerationConstant;
+                if (nCell.hp > nCell.celltype.maxHp) {
+                  nCell.hp = nCell.celltype.maxHp;
+                }
+                cell.hp += Game.regenerationConstant;
+                if (cell.hp > 0) cell.hp = 0;
+                if (needProgUpdate && nCell.hp > 0) {
+                  Game.treesBurnt--;
+                  Game.emit('progress', Game);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
     if (Game.cellsOnFire.length > 0) {
       stoppedFireIndexes = [];
-      for (i = 0, _ref = Game.cellsOnFire.length - 1; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
+      for (i = 0, _ref3 = Game.cellsOnFire.length - 1; 0 <= _ref3 ? i <= _ref3 : i >= _ref3; 0 <= _ref3 ? i++ : i--) {
         cell = Game.cellsOnFire[i];
         if (Game.makeSmoke && cell.firelevel === Game.MaxFireLevel) {
           if (Math.random() < Game.smokeLikelihood) {
@@ -100,8 +137,8 @@
         }
         neighbours = getNeighbours(cell.x, cell.y);
         if (cell.firelevel > 0) {
-          for (_i = 0, _len = neighbours.length; _i < _len; _i++) {
-            n = neighbours[_i];
+          for (_k = 0, _len3 = neighbours.length; _k < _len3; _k++) {
+            n = neighbours[_k];
             if (map.cellExists(n.x, n.y)) {
               nCell = map.getCell(n.x, n.y);
               if (nCell.celltype.flammable && nCell.hp > 0) {
@@ -118,48 +155,11 @@
           }
         }
       }
-      for (i = _ref2 = Game.cellsOnFire.length - 1; _ref2 <= 0 ? i <= 0 : i >= 0; _ref2 <= 0 ? i++ : i--) {
+      for (i = _ref4 = Game.cellsOnFire.length - 1; _ref4 <= 0 ? i <= 0 : i >= 0; _ref4 <= 0 ? i++ : i--) {
         cell = Game.cellsOnFire[i];
         if (cell.firelevel <= 0) {
           cell.onFire = false;
           Game.cellsOnFire.splice(i, 1);
-        }
-      }
-    }
-    if (Game.smoke.length > 0) {
-      for (i = _ref3 = Game.smoke.length - 1; _ref3 <= 0 ? i <= 0 : i >= 0; _ref3 <= 0 ? i++ : i--) {
-        smoke = Game.smoke[i];
-        smoke.life -= elapsed / 1000;
-        delta = 10 * (elapsed / 1000);
-        smoke.x += delta;
-        if (smoke.life <= 0) Game.smoke.splice(i, 1);
-      }
-    }
-    _ref4 = Game._waterCells;
-    for (_j = 0, _len2 = _ref4.length; _j < _len2; _j++) {
-      cell = _ref4[_j];
-      if (cell.hp < 0) {
-        neighbours = getNeighbours(cell.x, cell.y);
-        for (_k = 0, _len3 = neighbours.length; _k < _len3; _k++) {
-          n = neighbours[_k];
-          if (map.cellExists(n.x, n.y)) {
-            nCell = map.getCell(n.x, n.y);
-            if (!nCell.onFire) {
-              if (nCell.celltype === root.treeType && (!nCell.onFire) && nCell.hp < nCell.celltype.maxHp) {
-                needProgUpdate = nCell.hp === 0 ? true : false;
-                nCell.hp += Game.regenerationConstant;
-                if (nCell.hp > nCell.celltype.maxHp) {
-                  nCell.hp = nCell.celltype.maxHp;
-                }
-                cell.hp += Game.regenerationConstant;
-                if (cell.hp > 0) cell.hp = 0;
-                if (needProgUpdate && nCell.hp > 0) {
-                  Game.treesBurnt--;
-                  Game.emit('progress', Game);
-                }
-              }
-            }
-          }
         }
       }
     }
@@ -276,6 +276,22 @@
       clearTimeout(Game._intervalId);
       return Game.started = false;
     }
+  };
+
+  Game.regrow = function() {
+    var cell, _i, _len, _ref;
+    Game.stop();
+    Game.cellsOnFire = [];
+    _ref = Game.map.map;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      cell = _ref[_i];
+      cell.hp = cell.celltype.maxHp;
+      cell.firelevel = 0;
+      cell.onFire = false;
+    }
+    Game.treesBurnt = 0;
+    Game.emit('progress', Game);
+    return Game.start();
   };
 
 }).call(this);
