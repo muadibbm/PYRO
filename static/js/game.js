@@ -259,6 +259,8 @@
 
   Game.loadMap = function(map) {
     var cell, x, y, _i, _len, _ref, _ref2, _ref3;
+    Game.moveCounter = 0;
+    Game.emit('move', Game.moveCounter);
     Game.won = false;
     Game.burnMode = false;
     Game.map = map;
@@ -301,6 +303,8 @@
     var cell, _i, _len, _ref;
     Game.stop();
     Game.cellsOnFire = [];
+    Game.moveCounter = 0;
+    Game.emit('move', Game.moveCounter);
     _ref = Game.map.map;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       cell = _ref[_i];
@@ -313,6 +317,25 @@
     Game.won = false;
     Game.burnMode = false;
     return Game.start();
+  };
+
+  Game.burnAll = function() {
+    var cell, _i, _len, _ref, _results;
+    Game.burnMode = true;
+    Game.cellsOnFire = [];
+    _ref = root.Game.map.map;
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      cell = _ref[_i];
+      if (cell.celltype === root.treeType && cell.hp > 0) {
+        cell.firelevel = Game.MaxFireLevel;
+        Game.cellsOnFire.push(cell);
+        _results.push(cell.onFire = true);
+      } else {
+        _results.push(void 0);
+      }
+    }
+    return _results;
   };
 
 }).call(this);

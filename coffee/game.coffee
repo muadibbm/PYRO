@@ -213,7 +213,7 @@ Game.init = (canvas, map, callback) ->
 
 Game.loadMap = (map) ->
   Game.moveCounter = 0 
-  Game.emit 'move', game.moveCounter
+  Game.emit 'move', Game.moveCounter
   Game.won = false
   Game.burnMode = false
   Game.map = map

@@ -33,6 +33,8 @@
         firedCell = Game.map.getCell(cellx, celly);
         if (firedCell.celltype.flammable && firedCell.hp > 0) {
           firedCell.firelevel = Game.MaxFireLevel;
+          Game.moveCounter++;
+          Game.emit('move', Game.moveCounter);
           if (!firedCell.onFire) {
             Game.cellsOnFire.push(firedCell);
             return firedCell.onFire = true;

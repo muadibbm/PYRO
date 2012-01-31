@@ -20,6 +20,10 @@ $(window).ready ->
     Game.on 'move', (moveCount) ->
       
 
+    # bind about
+    $('#about').click ->
+      tb_show 'How to play', '#TB_inline?height=320&width=300&inlineId=hiddenModalContent'
+
     # bind victory
     victoryDiv = $("<div id='victoryMessage' class='TB_modal' style='display:none;'><div>Congratulations, you burnt down a forest.</div></div>")
     $('body').append victoryDiv
