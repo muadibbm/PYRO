@@ -22,11 +22,11 @@
       victoryDiv = $("<div id='victoryMessage' class='TB_modal' style='display:none;'><div>Congratulations, you burnt down a forest.</div></div>");
       $('body').append(victoryDiv);
       Game.on('victory', function(game) {
-        Game.stop();
         return tb_show('Victory', '#TB_inline?height=100&width=300&inlineId=victoryMessage');
       });
       $('#burn').click(function() {
         var cell, _i, _len, _ref, _results;
+        Game.burnMode = true;
         Game.cellsOnFire = [];
         _ref = root.Game.map.map;
         _results = [];

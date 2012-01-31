@@ -23,18 +23,19 @@ root.Game = Game = {}
 Game.fps = 15
 Game.tileHeight = 25
 Game.tileWidth = 25
-Game.destructionConstant = 0.05
-Game.propogationConstant = 0.12
+Game.destructionConstant = 0.08
+Game.propogationConstant = 0.1
 Game.fireAnimationRate = 10 # frames per second
 Game.MaxFireLevel = 10
-Game.fireFadeRate = 0.683
+Game.fireFadeRate = 0.4
 Game.regenerate = true
-Game.regenerationConstant = 0.1
+Game.regenerationConstant = 0.03
 Game.makeSmoke = true
 Game.smokeLikelihood = 0.2
 Game.smokeSize = 7 
 Game.smokeLife = 2 # seconds
 # --------------------------
+
 
 Game.run = () ->
   Game.update()
@@ -58,7 +59,7 @@ Game.update = () ->
         Game.smoke.splice i,1
     
   # regeneration
-  if Game.regenerate
+  if Game.regenerate and not Game.burnMode and not Game.won
     for cell in Game._waterCells
       if cell.hp < 0 #negative hp means regneration points
         neighbours = getNeighbours cell.x, cell.y
@@ -66,15 +67,23 @@ Game.update = () ->
           if map.cellExists n.x, n.y
             nCell = map.getCell n.x, n.y
             if not nCell.onFire
-              if nCell.celltype == root.treeType and (not nCell.onFire) and nCell.hp < nCell.celltype.maxHp
-                needProgUpdate = if nCell.hp == 0 then true else false
-                nCell.hp += Game.regenerationConstant
-                if nCell.hp > nCell.celltype.maxHp then nCell.hp = nCell.celltype.maxHp
-                cell.hp += Game.regenerationConstant
-                if cell.hp > 0 then cell.hp = 0
-                if needProgUpdate and nCell.hp > 0
-                  Game.treesBurnt--
-                  Game.emit 'progress', Game
+              # only regrow if neighbour cells NEXT to the neighbour cells
+              # aren't on fire
+              nneighbours = getNeighbours nCell.x, nCell.y
+              noFire = true
+              for nn in nneighbours
+                if map.cellExists nn.x, nn.y
+                  noFire = false if map.getCell(nn.x, nn.y).firelevel > 0
+              if noFire
+                if nCell.celltype == root.treeType and (not nCell.onFire) and nCell.hp < nCell.celltype.maxHp
+                  needProgUpdate = if nCell.hp == 0 then true else false
+                  nCell.hp += Game.regenerationConstant
+                  if nCell.hp < 0.1 then nCell.hp = 0.1
+                  if nCell.hp > nCell.celltype.maxHp then nCell.hp = nCell.celltype.maxHp
+                  cell.hp += Game.regenerationConstant
+                  if cell.hp > 0 then cell.hp = 0
+                  if needProgUpdate and nCell.hp > 0
+                    Game.treesBurnt--
 
   # fire
   if Game.cellsOnFire.length > 0
@@ -96,9 +105,6 @@ Game.update = () ->
         cell.hp = 0
         cell.firelevel = 0
         Game.treesBurnt++
-        Game.emit 'progress', Game
-        if Game.treesBurnt == Game.treeCount
-          Game.emit 'victory', Game
       else
         cell.firelevel -= Game.fireFadeRate
         cell.firelevel = 0 if cell.firelevel < 0
@@ -124,6 +130,12 @@ Game.update = () ->
       if cell.firelevel <= 0
         cell.onFire = false 
         Game.cellsOnFire.splice i,1
+
+  if not Game.won
+    Game.emit 'progress', Game
+    if Game.treesBurnt == Game.treeCount
+      Game.won = true
+      Game.emit 'victory', Game
 
   Game._lastUpdate = updateTime
 
@@ -200,6 +212,10 @@ Game.init = (canvas, map, callback) ->
     callback()
 
 Game.loadMap = (map) ->
+  Game.moveCounter = 0 
+  Game.emit 'move', game.moveCounter
+  Game.won = false
+  Game.burnMode = false
   Game.map = map
   Game._waterCells = []
   Game.cellsOnFire = []
@@ -233,20 +249,25 @@ Game.stop = () ->
 Game.regrow = () ->
   Game.stop()
   Game.cellsOnFire = []
+  Game.moveCounter = 0
+  Game.emit 'move', Game.moveCounter
   for cell in Game.map.map
     cell.hp = cell.celltype.maxHp
     cell.firelevel = 0
     cell.onFire = false
   Game.treesBurnt = 0
   Game.emit 'progress', Game
+  Game.won = false
+  Game.burnMode = false
   Game.start()
 
 
-#Game.clear = () ->
-#  if Game.started
-#    Game.stop()
-#  Game.map = []
-
-
-
-
+Game.burnAll = () ->
+  Game.burnMode = true
+  Game.cellsOnFire = []
+  for cell in root.Game.map.map
+    if cell.celltype == root.treeType and cell.hp > 0
+      cell.firelevel = Game.MaxFireLevel  
+      # if not cell.onFire then Game.cellsOnFire.push cell
+      Game.cellsOnFire.push cell
+      cell.onFire = true
